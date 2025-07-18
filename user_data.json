@@ -1,4 +1,6 @@
 {
-  "cash": 10000,
-  "portfolio": {}
+    "cash": 9700,
+    "portfolio": {
+        "MSFT": 0.5862810100512984
+    }
 }
