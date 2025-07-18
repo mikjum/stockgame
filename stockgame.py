@@ -41,7 +41,7 @@ st.title("Osakesalkun hallinta (Git-push)")
 
 data = load_data()
 
-TICKERS = ["AAPL", "MSFT", "TSLA", "GOOGL"]
+TICKERS = ["AAPL", "MSFT", "TSLA", "GOOGL", "AMZN, META, NVDA, KO, MCD, NFLX]
 selected_ticker = st.selectbox("Valitse osake", TICKERS)
 
 ticker_data = yf.Ticker(selected_ticker)
