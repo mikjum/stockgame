@@ -82,6 +82,9 @@ st.subheader("Salkkusi")
 if data["portfolio"]:
     full_value = 0
     for ticker, info in data["portfolio"].items():
+        shares = info["shares"]
+        if shares < 0.0001:  # 🔶 UUSI: Ei näytetä osakkeita, jos määrä on käytännössä nolla
+            continue
         ticker_price = yf.Ticker(ticker).history(period="1d")["Close"].iloc[-1]
         shares = info["shares"]
         invested_value = info.get("value", 0)
