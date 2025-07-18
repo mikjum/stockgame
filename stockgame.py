@@ -1,55 +1,66 @@
-import json
-import os
 import streamlit as st
 import yfinance as yf
+import json
+from pathlib import Path
+import pandas as pd
 
-DATA_FILE = "user_data.json"
-TICKERS = ["AAPL", "MSFT", "GOOG", "NVDA", "NOKIA", "TSLA"]
+# Tiedostopolku (sama kuin repossa)
+DATA_FILE = Path("user_data.json")
 
+# Funktio datan lukemiseen
 def load_data():
-    if os.path.exists(DATA_FILE):
+    if DATA_FILE.exists():
         with open(DATA_FILE, "r") as f:
             return json.load(f)
     else:
         return {"cash": 10000, "portfolio": {}}
 
+# Funktio datan tallentamiseen
 def save_data(data):
     with open(DATA_FILE, "w") as f:
-        json.dump(data, f)
+        json.dump(data, f, indent=4)
 
-st.title("Osakesimulaattori (Historiallisella kurssikäyrällä)")
+# Streamlit-käyttöliittymä alkaa tästä
+st.title("Osakesalkun hallinta")
 
+# Alustetaan käyttäjätieto
 data = load_data()
-st.subheader(f"Käyttöraha: {data['cash']:.2f} USD")
 
-selected_ticker = st.selectbox("Valitse yhtiö:", TICKERS)
+# Valmiit tickerit (voit lisätä tähän)
+TICKERS = ["AAPL", "MSFT", "TSLA", "GOOGL"]
 
+selected_ticker = st.selectbox("Valitse osake", TICKERS)
+
+# Näytetään kurssikehitys (3 kk)
 ticker_data = yf.Ticker(selected_ticker)
-
-# ✅ Haetaan 3kk historian hintadata
 hist = ticker_data.history(period="3mo")
 
-# ✅ Nykyinen hinta
-current_price = hist['Close'].iloc[-1]
-st.write(f"Kurssi {selected_ticker} (nyt): {current_price:.2f} USD")
+st.line_chart(hist["Close"])
+st.write(f"Viimeisin kurssi: {hist['Close'].iloc[-1]:.2f} USD")
 
-# ✅ Piirretään kurssikäyrä
-st.line_chart(hist['Close'])
+st.write(f"Käteinen tililläsi: {data['cash']} USD")
 
-# ✅ Osto-osio
-buy_amount = st.number_input("Ostettavien osakkeiden määrä:", min_value=1, value=1)
-
+# Osto
+buy_amount = st.number_input("Ostosumma (USD)", min_value=0, step=100)
 if st.button("Osta"):
-    total_cost = buy_amount * current_price
-    if total_cost > data["cash"]:
+    if buy_amount > data["cash"]:
         st.error("Ei tarpeeksi rahaa!")
     else:
-        data["cash"] -= total_cost
-        data["portfolio"][selected_ticker] = data["portfolio"].get(selected_ticker, 0) + buy_amount
+        price = hist["Close"].iloc[-1]
+        shares = buy_amount / price
+        data["cash"] -= buy_amount
+        data["portfolio"][selected_ticker] = data["portfolio"].get(selected_ticker, 0) + shares
         save_data(data)
-        st.success(f"Ostit {buy_amount} kpl {selected_ticker}-osakkeita hintaan {total_cost:.2f} USD")
+        st.success(f"Ostit {shares:.4f} kpl osakkeita {selected_ticker} hintaan {price:.2f} USD")
+        st.experimental_rerun()
 
-# ✅ Näytä portfolio
-st.subheader("Portfoliosi:")
-for stock, qty in data["portfolio"].items():
-    st.write(f"{stock}: {qty} kpl")
+# Näytä salkku
+st.subheader("Salkkusi")
+if data["portfolio"]:
+    for ticker, shares in data["portfolio"].items():
+        ticker_price = yf.Ticker(ticker).history(period="1d")["Close"].iloc[-1]
+        st.write(f"{ticker}: {shares:.4f} kpl — Arvo: {shares * ticker_price:.2f} USD")
+else:
+    st.write("Salkkusi on tyhjä.")
+
+
