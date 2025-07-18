@@ -58,7 +58,7 @@ if st.button("Osta"):
         st.error("Ei tarpeeksi rahaa!")
     else:
         price = hist["Close"].iloc[-1]
-        comission_to_pay = buy_amout * comission
+        comission_to_pay = buy_amount * comission
         shares = buy_amount / price
         data["cash"] -= buy_amount
         data["cash"] -= comission_to_pay
