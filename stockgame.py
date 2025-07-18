@@ -80,12 +80,18 @@ if st.button("Osta"):
 # Näytä salkku
 st.subheader("Salkkusi")
 if data["portfolio"]:
+    full_value = 0
     for ticker, info in data["portfolio"].items():
         ticker_price = yf.Ticker(ticker).history(period="1d")["Close"].iloc[-1]
         shares = info["shares"]
         invested_value = info.get("value", 0)
         current_value = shares * ticker_price
+        full_value += current_value
         net_sell = current_value - current_value * comission
         st.write(f"{ticker}: {shares:.4f} kpl — Nykyarvo: {current_value:.2f} USD (Sijoitettu komissioineen: {invested_value:.2f} USD) Myynistä saatavissa oleva arvo: {net_sell:2f} USD")
+    full_net_value = full_value - full_value * comission
+    total_value = full_net_value + data["cash"]
+    st.write(f"Salkkusi kokonaisarvo on {full_value:.2f} UDS, josta voit myynnissä saada {full_net_value:.2f} USD")
+    st.write(f"Kokonaisomaisuutesi on nyt {total_value:.2f} USD")
 else:
     st.write("Salkkusi on tyhjä.")
