@@ -101,15 +101,15 @@ if data["portfolio"]:
                 st.write("**Olet tappiolla**")
 
         
-        hist = ticker.history(period="1d")
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=hist.index, y=hist["Close"], mode="lines", name="Close"))
-        fig.update_layout(
-            width=400,  # leveys pikseleinä
-            height=200,  # korkeus pikseleinä
-            margin=dict(l=10, r=10, t=30, b=10),
-            title="Pieni kuvaaja"
-        )
+ #       hist = ticker.history(period="1d")
+  #      fig = go.Figure()
+   #     fig.add_trace(go.Scatter(x=hist.index, y=hist["Close"], mode="lines", name="Close"))
+     #   fig.update_layout(
+      #      width=400,  # leveys pikseleinä
+       #     height=200,  # korkeus pikseleinä
+        #    margin=dict(l=10, r=10, t=30, b=10),
+         #   title="Pieni kuvaaja"
+       # )
         
         sell_amount = st.number_input(
             f"Myyntimäärä ({ticker})",
