@@ -62,7 +62,7 @@ if st.button("Osta"):
         save_data(data)
         git_commit_and_push(f"Ostettiin {shares:.4f} kpl {selected_ticker}")
         st.success(f"Ostit {shares:.4f} kpl {selected_ticker} hintaan {price:.2f} USD")
-        st.experimental_rerun()
+        
 
 # Näytä salkku
 st.subheader("Salkkusi")
