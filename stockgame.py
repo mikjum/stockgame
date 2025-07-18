@@ -92,6 +92,14 @@ if data["portfolio"]:
         full_value += current_value
         net_sell = current_value - current_value * comission
         st.write(f"**{ticker}**: {shares:.4f} kpl — Nykyarvo: {current_value:.2f} USD (Sijoitettu komissioineen: {invested_value:.2f} USD) Myynistä saatavissa oleva arvo: {net_sell:2f} USD")
+        if net_sell > invested value:
+            st.write("**Olet voitolla**)
+        else:
+            if net_sell == invested_value:
+                st.write("**Olet tasoissa**")
+            else:
+                st.write("**Olet tappiolla**)
+        
         sell_amount = st.number_input(
             f"Myyntimäärä ({ticker})",
             min_value=0.0,
