@@ -99,7 +99,9 @@ if data["portfolio"]:
                 st.write("**Olet tasoissa**")
             else:
                 st.write("**Olet tappiolla**")
-        hist = ticker.history(period=1d)
+
+        
+        hist = ticker.history(period="1d")
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=hist.index, y=hist["Close"], mode="lines", name="Close"))
         fig.update_layout(
