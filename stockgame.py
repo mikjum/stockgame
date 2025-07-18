@@ -98,7 +98,7 @@ if data["portfolio"]:
             if net_sell == invested_value:
                 st.write("**Olet tasoissa**")
             else:
-                st.write("**Olet tappiolla**)
+                st.write("**Olet tappiolla**")
         
         sell_amount = st.number_input(
             f"Myyntimäärä ({ticker})",
