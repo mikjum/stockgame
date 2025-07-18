@@ -92,6 +92,27 @@ if data["portfolio"]:
         full_value += current_value
         net_sell = current_value - current_value * comission
         st.write(f"**{ticker}**: {shares:.4f} kpl — Nykyarvo: {current_value:.2f} USD (Sijoitettu komissioineen: {invested_value:.2f} USD) Myynistä saatavissa oleva arvo: {net_sell:2f} USD")
+        sell_amount = st.number_input(
+            f"Myyntimäärä ({ticker})",
+            min_value=0.0,
+            max_value=shares,
+            step=0.1,
+            key=f"sell_input_{ticker}"
+        )
+
+        if st.button(f"Myy {ticker}", key=f"sell_button_{ticker}"):
+            if sell_amount > 0:
+                sell_value = sell_amount * ticker_price
+                net_sell_value = sell_value - sell_value * comission
+                data["cash"] += net_sell_value
+                data["portfolio"][ticker]["shares"] -= sell_amount
+                data["portfolio"][ticker]["value"] -= invested_value * (sell_amount / shares)
+                save_data(data)
+                git_commit_and_push(f"Myytiin {sell_amount:.4f} kpl {ticker}")
+                st.success(f"Myyty {sell_amount:.4f} kpl {ticker}, tilille {net_sell_value:.2f} USD komission jälkeen")
+
+    
+    
     full_net_value = full_value - full_value * comission
     total_value = full_net_value + data["cash"]
     st.write(f"**Salkkusi kokonaisarvo:**  {full_value:.2f} UDS, josta voit myynnissä saada {full_net_value:.2f} USD")
