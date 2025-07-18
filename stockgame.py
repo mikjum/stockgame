@@ -3,11 +3,12 @@ import yfinance as yf
 import json
 from pathlib import Path
 import pandas as pd
+import subprocess
+import os
 
-# Tiedostopolku (sama kuin repossa)
+# Tiedostopolku (samassa hakemistossa kuin app)
 DATA_FILE = Path("user_data.json")
 
-# Funktio datan lukemiseen
 def load_data():
     if DATA_FILE.exists():
         with open(DATA_FILE, "r") as f:
@@ -15,30 +16,38 @@ def load_data():
     else:
         return {"cash": 10000, "portfolio": {}}
 
-# Funktio datan tallentamiseen
 def save_data(data):
     with open(DATA_FILE, "w") as f:
         json.dump(data, f, indent=4)
 
-# Streamlit-käyttöliittymä alkaa tästä
-st.title("Osakesalkun hallinta")
+def git_commit_and_push(commit_message="Päivitetty käyttäjätieto"):
+    subprocess.run(["git", "config", "--global", "user.email", "sinun@email.com"])
+    subprocess.run(["git", "config", "--global", "user.name", "SinunGitHubNimi"])
+    subprocess.run(["git", "add", str(DATA_FILE)])
+    subprocess.run(["git", "commit", "-m", commit_message])
+    
+    github_token = os.getenv("GITHUB_TOKEN")
+    repo_url = os.getenv("GITHUB_REPO_URL")
+    if github_token and repo_url:
+        push_url = repo_url.replace("https://", f"https://{github_token}@")
+        subprocess.run(["git", "push", push_url])
+    else:
+        st.warning("GITHUB_TOKEN tai GITHUB_REPO_URL puuttuu!")
 
-# Alustetaan käyttäjätieto
+# Aloitus
+st.title("Osakesalkun hallinta (Git-push)")
+
 data = load_data()
 
-# Valmiit tickerit (voit lisätä tähän)
 TICKERS = ["AAPL", "MSFT", "TSLA", "GOOGL"]
-
 selected_ticker = st.selectbox("Valitse osake", TICKERS)
 
-# Näytetään kurssikehitys (3 kk)
 ticker_data = yf.Ticker(selected_ticker)
 hist = ticker_data.history(period="3mo")
 
 st.line_chart(hist["Close"])
 st.write(f"Viimeisin kurssi: {hist['Close'].iloc[-1]:.2f} USD")
-
-st.write(f"Käteinen tililläsi: {data['cash']} USD")
+st.write(f"Käteinen: {data['cash']} USD")
 
 # Osto
 buy_amount = st.number_input("Ostosumma (USD)", min_value=0, step=100)
@@ -51,7 +60,8 @@ if st.button("Osta"):
         data["cash"] -= buy_amount
         data["portfolio"][selected_ticker] = data["portfolio"].get(selected_ticker, 0) + shares
         save_data(data)
-        st.success(f"Ostit {shares:.4f} kpl osakkeita {selected_ticker} hintaan {price:.2f} USD")
+        git_commit_and_push(f"Ostettiin {shares:.4f} kpl {selected_ticker}")
+        st.success(f"Ostit {shares:.4f} kpl {selected_ticker} hintaan {price:.2f} USD")
         st.experimental_rerun()
 
 # Näytä salkku
@@ -62,5 +72,6 @@ if data["portfolio"]:
         st.write(f"{ticker}: {shares:.4f} kpl — Arvo: {shares * ticker_price:.2f} USD")
 else:
     st.write("Salkkusi on tyhjä.")
+
 
 
