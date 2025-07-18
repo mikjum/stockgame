@@ -9,6 +9,8 @@ import os
 # Tiedostopolku (samassa hakemistossa kuin app)
 DATA_FILE = Path("user_data.json")
 
+comission = 0.02
+
 def load_data():
     if DATA_FILE.exists():
         with open(DATA_FILE, "r") as f:
@@ -56,8 +58,10 @@ if st.button("Osta"):
         st.error("Ei tarpeeksi rahaa!")
     else:
         price = hist["Close"].iloc[-1]
+        comission_to_pay = buy_amout * comission
         shares = buy_amount / price
         data["cash"] -= buy_amount
+        data["cash"] -= comission_to_pay
 
         # Jos osaketta ei vielä portfoliosta löydy, alustetaan
         if selected_ticker not in data["portfolio"]:
@@ -66,10 +70,11 @@ if st.button("Osta"):
         # Päivitetään osakkeiden määrä ja sijoitettu arvo
         data["portfolio"][selected_ticker]["shares"] += shares
         data["portfolio"][selected_ticker]["value"] += buy_amount
+        data["portfolio"][selected_ticker]["value"] += comission_to_pay
 
         save_data(data)
         git_commit_and_push(f"Ostettiin {shares:.4f} kpl {selected_ticker}")
-        st.success(f"Ostit {shares:.4f} kpl {selected_ticker} hintaan {price:.2f} USD")
+        st.success(f"Ostit {shares:.4f} kpl {selected_ticker} hintaan {price:.2f} USD sisältäen komission")
         
 
 # Näytä salkku
@@ -80,6 +85,7 @@ if data["portfolio"]:
         shares = info["shares"]
         invested_value = info.get("value", 0)
         current_value = shares * ticker_price
-        st.write(f"{ticker}: {shares:.4f} kpl — Nykyarvo: {current_value:.2f} USD (Sijoitettu: {invested_value:.2f} USD)")
+        net_sell = current_value - current_value * comission
+        st.write(f"{ticker}: {shares:.4f} kpl — Nykyarvo: {current_value:.2f} USD (Sijoitettu komissioineen: {invested_value:.2f} USD) Myynistä saatavissa oleva arvo: {net_sell:2f} USD")
 else:
     st.write("Salkkusi on tyhjä.")
