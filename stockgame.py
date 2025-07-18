@@ -75,11 +75,11 @@ if st.button("Osta"):
 # Näytä salkku
 st.subheader("Salkkusi")
 if data["portfolio"]:
-    for ticker, shares in data["portfolio"].items():
+    for ticker, info in data["portfolio"].items():
         ticker_price = yf.Ticker(ticker).history(period="1d")["Close"].iloc[-1]
-        st.write(f"{ticker}: {shares:.4f} kpl — Arvo: {shares * ticker_price:.2f} USD")
+        shares = info["shares"]
+        invested_value = info.get("value", 0)
+        current_value = shares * ticker_price
+        st.write(f"{ticker}: {shares:.4f} kpl — Nykyarvo: {current_value:.2f} USD (Sijoitettu: {invested_value:.2f} USD)")
 else:
     st.write("Salkkusi on tyhjä.")
-
-
-
