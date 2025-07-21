@@ -41,11 +41,13 @@ st.title("Osakesalkun hallinta (Git-push)")
 
 data = load_data()
 
-TICKERS = ["AAPL", "MSFT", "TSLA", "GOOGL", "AMZN", "META", "NVDA", "KO", "MCD", "NFLX"]
+TICKERS = ["AAPL", "MSFT", "TSLA", "GOOGL", "AMZN", "META", "NVDA", "KO", "MCD", "NFLX", "AMAT"]
+TIMESPANS = ["1d", "5d", "1mo", "3mo"]
 selected_ticker = st.selectbox("Valitse osake", TICKERS)
+selected_timescale = st.selectbox("Valitse aikajänne", TIMESPANS)
 
 ticker_data = yf.Ticker(selected_ticker)
-hist = ticker_data.history(period="3mo")
+hist = ticker_data.history(period=selected_timescale)
 
 st.line_chart(hist["Close"])
 st.write(f"Viimeisin kurssi: {hist['Close'].iloc[-1]:.2f} USD")
