@@ -41,7 +41,7 @@ st.title("Osakesalkun hallinta (Git-push)")
 
 data = load_data()
 
-TICKERS = ["AAPL", "MSFT", "TSLA", "GOOGL", "AMZN", "META", "NVDA", "KO", "MCD", "NFLX", "AMAT"]
+TICKERS = ["AAPL", "MSFT", "TSLA", "GOOGL", "AMZN", "META", "NVDA", "KO", "MCD", "NFLX", "AMAT", "ASML"]
 TIMESPANS = ["1d", "5d", "1mo", "3mo"]
 selected_ticker = st.selectbox("Valitse osake", TICKERS)
 selected_timescale = st.selectbox("Valitse aikajänne", TIMESPANS)
