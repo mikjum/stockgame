@@ -9,7 +9,7 @@ import os
 # Tiedostopolku (samassa hakemistossa kuin app)
 DATA_FILE = Path("user_data.json")
 
-comission = 0.02
+comission = 0.002
 
 def load_data():
     if DATA_FILE.exists():
