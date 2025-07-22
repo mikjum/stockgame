@@ -24,7 +24,10 @@ selected_ticker = st.selectbox("Valitse osake", TICKERS)
 selected_timescale = st.selectbox("Valitse aikajänne", TIMESPANS)
 
 ticker_data = yf.Ticker(selected_ticker)
-hist = ticker_data.history(period=selected_timescale)
+if selected_timescale == "1d":
+    hist = ticker_data.history(period=selected_timescale, period=15m)
+else:
+    hist = ticker_data.history(period=selected_timescale)
 
 st.line_chart(hist["Close"])
 st.write(f"Viimeisin kurssi: {hist['Close'].iloc[-1]:.2f} USD")
