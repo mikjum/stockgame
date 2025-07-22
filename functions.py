@@ -1,7 +1,7 @@
 import json
 import subprocess
 
-def load_data():
+def load_data(DATA_FILE):
     if DATA_FILE.exists():
         with open(DATA_FILE, "r") as f:
             return json.load(f)
