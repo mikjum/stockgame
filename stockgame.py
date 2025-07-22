@@ -76,7 +76,7 @@ if st.button("Osta"):
         data["portfolio"][selected_ticker]["value"] += comission_to_pay
 
         save_data(data)
-        git_commit_and_push(f"Ostettiin {shares:.4f} kpl {selected_ticker}")
+        functions.git_commit_and_push(f"Ostettiin {shares:.4f} kpl {selected_ticker}")
         st.success(f"Ostit {shares:.4f} kpl {selected_ticker} hintaan {price:.2f} USD sisältäen komission")
         
 
@@ -130,7 +130,7 @@ if data["portfolio"]:
                 data["portfolio"][ticker]["shares"] -= sell_amount
                 data["portfolio"][ticker]["value"] -= invested_value * (sell_amount / shares)
                 save_data(data)
-                git_commit_and_push(f"Myytiin {sell_amount:.4f} kpl {ticker}")
+                functions.git_commit_and_push(f"Myytiin {sell_amount:.4f} kpl {ticker}")
                 st.success(f"Myyty {sell_amount:.4f} kpl {ticker}, tilille {net_sell_value:.2f} USD komission jälkeen")
 
         if st.button(f"Myy kaikki {ticker}", key=f"sell_all_button_{ticker}"):
@@ -140,7 +140,7 @@ if data["portfolio"]:
             data["portfolio"][ticker]["shares"] = 0.0
             data["portfolio"][ticker]["value"] = 0.0
             save_data(data)
-            git_commit_and_push(f"Myytiin kaikki {shares:.4f} kpl {ticker}")
+            functions.git_commit_and_push(f"Myytiin kaikki {shares:.4f} kpl {ticker}")
             st.success(f"Myyty kaikki {shares:.4f} kpl {ticker}, tilille {net_sell_value:.2f} USD komission jälkeen")
 
 
