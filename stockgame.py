@@ -25,7 +25,7 @@ selected_timescale = st.selectbox("Valitse aikajänne", TIMESPANS)
 
 ticker_data = yf.Ticker(selected_ticker)
 if selected_timescale == "1d":
-    hist = ticker_data.history(period=selected_timescale, period="15m")
+    hist = ticker_data.history(period=selected_timescale, interval="5m")
 else:
     hist = ticker_data.history(period=selected_timescale)
 
