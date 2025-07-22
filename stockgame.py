@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 import subprocess
 import os
+import functions.py
 
 # Tiedostopolku (samassa hakemistossa kuin app)
 DATA_FILE = Path("user_data.json")
