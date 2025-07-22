@@ -13,7 +13,7 @@ def save_data(data, DATA_FILE):
         json.dump(data, f, indent=4)
 
 
-def git_commit_and_push(commit_message="Päivitetty käyttäjätieto"):
+def git_commit_and_push(commit_message="Päivitetty käyttäjätieto", DATA_FILE):
     subprocess.run(["git", "config", "--global", "user.email", "sinun@email.com"])
     subprocess.run(["git", "config", "--global", "user.name", "SinunGitHubNimi"])
     subprocess.run(["git", "add", str(DATA_FILE)])
