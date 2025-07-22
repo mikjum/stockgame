@@ -8,7 +8,7 @@ def load_data(DATA_FILE):
     else:
         return {"cash": 10000, "portfolio": {}}
 
-def save_data(data):
+def save_data(data, DATA_FILE):
     with open(DATA_FILE, "w") as f:
         json.dump(data, f, indent=4)
 
