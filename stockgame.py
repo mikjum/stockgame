@@ -40,7 +40,7 @@ def git_commit_and_push(commit_message="Päivitetty käyttäjätieto"):
 # Aloitus
 st.title("Osakesalkun hallinta (Git-push)")
 
-data = load_data()
+data = functions.load_data()
 
 TICKERS = ["AAPL", "MSFT", "TSLA", "GOOGL", "AMZN", "META", "NVDA", "KO", "MCD", "NFLX", "AMAT", "ASML"]
 TIMESPANS = ["1d", "5d", "1mo", "3mo"]
